@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { BiArrowBack } from "react-icons/bi";
 import { BsImages } from "react-icons/bs";
 import { IoSend, IoHammerOutline } from "react-icons/io5";
+// import useGetUserMessage from "../../../../hooks/useGetUserMessage";
 
 const chatHistory = [
   {
@@ -83,7 +84,7 @@ const chatHistory = [
 ];
 
 interface ChatRoomProps {
-  roodId: string;
+  roomId: string;
   host: string;
   hostUsername: string;
   hostProfile: string;
