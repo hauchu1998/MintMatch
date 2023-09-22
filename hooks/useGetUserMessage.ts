@@ -6,7 +6,7 @@ import useXmtp from './useXmtp';
 
 type OnMessageCallback = () => void;
 
-const useConversation = (
+const useGetUserMessage = (
   peerAddress: string,
   onMessageCallback?: OnMessageCallback
 ) => {
@@ -91,4 +91,4 @@ const useConversation = (
   };
 };
 
-export default useConversation;
+export default useGetUserMessage;
