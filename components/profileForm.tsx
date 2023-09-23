@@ -157,6 +157,7 @@ export default function ProfileForm(props: ProfileFormProps) {
         setSelectedNfts={setSelectedNfts}
         modalOn={modalOn}
         setModalOn={setModalOn}
+        maxLength={4}
       />
     </div>
   );

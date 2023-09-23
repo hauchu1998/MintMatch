@@ -8,6 +8,7 @@ interface NftsModalProps {
   setSelectedNfts: Function;
   modalOn: boolean;
   setModalOn: Function;
+  maxLength: number;
 }
 
 // const nftList = [
@@ -32,7 +33,7 @@ export default function NftsModal(props: NftsModalProps) {
       setNftsSelection([nft]);
     } else if (checkIfInclude(nftsSelection, nft)) {
       setNftsSelection(nftsSelection.filter((item) => item !== nft));
-    } else if (nftsSelection && nftsSelection.length < 4) {
+    } else if (nftsSelection && nftsSelection.length < props.maxLength) {
       setNftsSelection([...nftsSelection, nft]);
     } else {
       alert("You can only select 4 NFTs");

@@ -9,6 +9,7 @@ import { TransactionModal } from "@/components/nftTransaction";
 import { SellerMessage, BuyerMessage } from "@/components/nftTransaction";
 import { TokenBalanceType } from "alchemy-sdk";
 import next from "next";
+import NftsModal from "@/components/nftsModal";
 
 export interface NftMessage {
   contract: string;
@@ -150,14 +151,15 @@ export default function ChatRoom() {
   const roomInfo = db;
   const [chatHistory, setChatHistory] = useState<ChatHistory[]>(chatHistory_db);
   const [textMessage, setTextMessage] = useState<string>("");
-  const [modalOn, setModalOn] = useState<boolean>(false);
+  const [txModalOn, setTxModalOn] = useState<boolean>(false);
+  const [nftsModalOn, setNftsModalOn] = useState<boolean>(false);
   const [proposedNftTx, setProposedNftTx] = useState<any>(undefined);
   const messagesEndRef = useRef<any>(null);
 
   const onClickNft = (owner: string, nft: any) => {
     const buyer = roomInfo.host === owner ? roomInfo.guest : roomInfo.host;
     setProposedNftTx({ ...nft, seller: owner, buyer });
-    setModalOn(true);
+    setTxModalOn(true);
   };
 
   const handleTextChange = (e: any) => {
@@ -275,8 +277,9 @@ export default function ChatRoom() {
     scrollToBottom();
   };
 
-  const handleSendNft = (nft: any) => {
+  const handleSendNft = (nfts: any[]) => {
     if (address === undefined) return;
+    const nft = nfts[0];
     chatHistory.push({
       from: address,
       type: "nft",
@@ -423,7 +426,10 @@ export default function ChatRoom() {
       </div>
       <div ref={messagesEndRef} className="mt-16" />
       <div className="w-full fixed bottom-0 gap-3 px-5 py-2 flex items-center bg-[#195573]">
-        <BsImages className="text-white text-3xl" />
+        <BsImages
+          className="text-white text-3xl"
+          onClick={() => setNftsModalOn(true)}
+        />
         {
           // @ts-ignore
           roomInfo.type === "creator" && (
@@ -445,11 +451,20 @@ export default function ChatRoom() {
           <IoSend />
         </button>
       </div>
-      {modalOn && (
+      {txModalOn && (
         <TransactionModal
-          setModalOn={setModalOn}
+          setModalOn={setTxModalOn}
           proposedNftTx={proposedNftTx}
           handleSendMessage={handleSendTx}
+        />
+      )}
+      {nftsModalOn && (
+        <NftsModal
+          selectedNfts={[]}
+          setSelectedNfts={handleSendNft}
+          modalOn={nftsModalOn}
+          setModalOn={setNftsModalOn}
+          maxLength={1}
         />
       )}
     </div>

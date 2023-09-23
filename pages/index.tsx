@@ -4,13 +4,19 @@ import { useEffect } from "react";
 import { useAccount, useConnect, useQuery } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { useGetUserProfile } from "@/hooks/useGetUserProfile";
+import axios from "axios";
 
 const fetchdata = async () => {
-  const data = await fetch(
-    "https://04d5-172-58-238-198.ngrok-free.app/profile/0xE2A794de195D92bBA0BA64e006FcC3568104245d"
+  const res = await axios.get(
+    "https://04d5-172-58-238-198.ngrok-free.app/profile/0x123455789111",
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
   );
-  console.log(data);
-  return data;
+  console.log(res.data);
+  return res.data;
 };
 
 fetchdata();
