@@ -140,8 +140,8 @@ export default function Match() {
               className="rounded-lg w-full h-[300px] border border-[#195573]"
               src={profile.nfts[0].image}
               alt={`NFT${index}`}
-              width={300}
-              height={300}
+              width={10}
+              height={10}
               priority
             />
             <div className="absolute left-3 bottom-3 font-bold text-white text-xl truncate w-[90%]">
