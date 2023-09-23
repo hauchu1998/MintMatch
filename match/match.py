@@ -1,25 +1,80 @@
-from typing import List
+from typing import List, Tuple
 from queue import PriorityQueue
+import requests
 
-def findMatches(user_to_match: List, user_profiles: List[List[int]]) -> List[int]:
-  priority_queue = PriorityQueue()
+label_map = {
+    "Art": 0,
+    "Game": 1,
+    "Tech": 2,
+    "Cute": 3,
+    "Sports": 4,
+    "Animals": 5,
+    "Music": 6,
+}
 
-  for user in user_profiles:
-    priority_rank = 0
-    for label1, label2 in zip(user_to_match, user):
-      priority_rank += label1 * label2 
-      if label1 != label2: #penalize difference
-        priority_rank -= 1
 
-    priority_queue.put((priority_rank, user))
+def map_labels(labels: List[str]) -> List[int]:
+    mapped_lst = [0] * len(label_map)
 
-  matches_users = []
-  while not priority_queue.empty(): #to list
-    matches_users.append(priority_queue.get()[1])
-  return matches_users[::-1] #rev order
-  
+    for label in labels:
+        label_ind = label_map[label]
+        mapped_lst[label_ind] = 1
 
-# user = [0,0,1]
+    return mapped_lst
+
+
+# Returns [(useraddress, [mappings])]
+# users with their labels mapped to 0 or 1
+def getUsers(user_profiles) -> List[Tuple]:
+    users = []
+    for user in user_profiles["profiles"]:
+        user_address = user_profiles["profiles"][user]["address"]
+        user_labels = user_profiles["profiles"][user]["labels"]
+
+        mapped_user_labels = map_labels(user_labels)
+        users.append((user_address, mapped_user_labels))
+
+    return users
+
+
+# Returns ranked matches of [userAdresses]
+def findMatches(user_to_match: List, user_profiles: List[Tuple]) -> List[int]:
+    priority_queue = PriorityQueue()
+
+    for address, user in user_profiles:
+        priority_rank = 0
+        for label1, label2 in zip(user_to_match[1], user):
+            priority_rank += label1 * label2
+            if label1 != label2:  # penalize difference
+                priority_rank -= 1
+
+        priority_queue.put((priority_rank, address, user))
+
+    matches_users = []
+    while not priority_queue.empty():  # to list
+        item = priority_queue.get()
+        matches_users.append(item[1])
+
+    return matches_users[::-1]  # rev order
+
+
+# def getProfiles(addresses: List[str]) -> List[dict]:
+
+
+def main():
+    request = requests.get("https://04d5-172-58-238-198.ngrok-free.app/profile/all")
+    user_profiles = request.json()
+
+    users = getUsers(user_profiles)
+
+    user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])  # example user
+    ordered_addresses = findMatches(user, users)
+
+    print(ordered_addresses)
+
+
+main()
+# user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])
 # users = [[1,0,1],[0,0,1],[1,1,1],[0,0,0],[1,1,1],[0,1,1],[0,1,0]]
 # p = findMatches(user, users)
 # print(p)
