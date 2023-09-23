@@ -131,7 +131,7 @@ export default function Explore() {
               {collection.name}
             </div>
             <div className="font-bold text-white text-xl">
-              {"price: " + collection.price + "ETH"}
+              {"price: " + collection.price + " MATIC"}
             </div>
             <div className="font-bold w-full max-h-10 bg-transparent text-white truncate">
               {collection.introduction}

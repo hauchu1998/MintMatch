@@ -5,6 +5,16 @@ import { useAccount, useConnect, useQuery } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { useGetUserProfile } from "@/hooks/useGetUserProfile";
 
+const fetchdata = async () => {
+  const data = await fetch(
+    "https://04d5-172-58-238-198.ngrok-free.app/profile/0xE2A794de195D92bBA0BA64e006FcC3568104245d"
+  );
+  console.log(data);
+  return data;
+};
+
+fetchdata();
+
 export default function Home() {
   const router = useRouter();
   const { data, isLoading } = useGetUserProfile();
@@ -14,12 +24,13 @@ export default function Home() {
   });
 
   useEffect(() => {
-    if (data?.address && data?.profile) {
+    if (isLoading) return;
+    if (data) {
       router.push("/app/match");
-    } else if (data?.address && data?.profile == undefined) {
+    } else {
       router.push("/app/register");
     }
-  }, [data, router]);
+  }, [data, isLoading, router]);
 
   return (
     <main className="absolute top-0 flex h-screen w-full flex-col items-center justify-center z-50">

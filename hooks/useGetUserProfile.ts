@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
+import { fetchUserProfiles } from "@/api/firebase";
 
 export const getUserProfileApi = async (address: string) => {
   // const res = await fetch(
@@ -43,7 +44,8 @@ export const useGetUserProfile = () => {
     queryKey: ["profile by address", address],
     queryFn: async () => {
       if (!enabled) throw new Error("Not connected");
-      return getUserProfileApi(address);
+      return fetchUserProfiles(address);
+      // return getUserProfileApi(address);
     },
   });
 };

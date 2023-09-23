@@ -54,7 +54,7 @@ export default function NftsModal(props: NftsModalProps) {
     <div
       className={`${
         props.modalOn ? "visible" : "hidden"
-      } fixed top-32 left-1/2 -translate-x-1/2 bg-black bg-opacity-90 w-[90%] h-[600px] p-2 overflow-scroll`}
+      } fixed top-32 left-1/2 -translate-x-1/2 bg-black bg-opacity-90 w-[90%] h-[600px] p-2 rounede-lg overflow-scroll`}
     >
       <div className="relative w-full h-full">
         <div className="fixed top-0 w-full text-center font-bold text-xl text-white bg-black py-3 z-10">

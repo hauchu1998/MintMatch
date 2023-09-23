@@ -13,7 +13,7 @@ const config = createConfig({
   }),
 });
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: { staleTime: 10 * 60 * 1000, cacheTime: 30 * 60 * 1000 },
   },
