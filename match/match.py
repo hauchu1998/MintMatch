@@ -3,6 +3,7 @@ from queue import PriorityQueue
 import requests
 
 
+#Fixed mapping to represent each label
 label_map = {
     "Art": 0,
     "Game": 1,
@@ -14,6 +15,7 @@ label_map = {
 }
 
 
+#returns a list representing whether or not (1 or 0) a label is in the list 
 def map_labels(labels: List[str]) -> List[int]:
     mapped_lst = [0] * len(label_map)
 
@@ -52,13 +54,14 @@ def findMatches(user_to_match: List, user_profiles: List[Tuple]) -> List[int]:
         priority_queue.put((priority_rank, address, user))
 
     matches_users = []
-    while not priority_queue.empty():  # to list
+    while not priority_queue.empty():# to list
         item = priority_queue.get()
         matches_users.append(item[1])
 
-    return matches_users[::-1]  # rev order
+    return matches_users[::-1] # rev order
 
 
+#Returns a list of user profiles in the same order as the given input addresses
 def getProfiles(addresses: List[str], user_profiles: dict) -> List[dict]:
     profiles = []
     for address in addresses:
