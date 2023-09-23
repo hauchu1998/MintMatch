@@ -27,16 +27,11 @@ export default function Swipe(props: SwipeProps) {
     props.currIndexRef.current = idx;
   };
 
-const swipeCard = async (dir: string) => {
-  if (canSwipe && currIndex < cardDeck) {
-    await props.childRefs[currIndex].current.swipe(dir);
-    const cardData = props.childRefs[currIndex].current.getCardData();
-    if (cardData.match) {
-      // Redirect to chatroom
-      window.location.href = `/chat/${cardData.match}`;
+  const swipeCard = async (dir: string) => {
+    if (canSwipe && currIndex < cardDeck) {
+      await props.childRefs[currIndex].current.swipe(dir);
     }
-  }
-};
+  };
 
   // increase current index and show card
   const goBack = async () => {
@@ -93,7 +88,7 @@ const swipeCard = async (dir: string) => {
         ) : (
           <div className="mt-5 w-full text-xl  text-center font-bold">
             Swipe a card or press a button to get Restore Card button visible!
-            
+            if 
           </div>
         )}
       </div>
