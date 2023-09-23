@@ -63,7 +63,6 @@ interface Message {
 export default function Messages() {
   const { isConnected } = useAccount();
   const router = useRouter();
-  // const { data } = useGetUserProfile();
   const data = db;
   const [messages, setMessages] = useState<Message[]>();
   const [mode, setMode] = useState("all");

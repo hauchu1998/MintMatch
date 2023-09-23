@@ -41,28 +41,6 @@ const fetchUserNftsByWallet = async (address: string) => {
     }
   });
   return nftList.filter((nft) => nft !== undefined);
-  //   if (!Moralis.Core.isStarted) {
-  //     await Moralis.start({ apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY });
-  //   }
-  //   const chain = EvmChain.MUMBAI;
-  //   const response = await Moralis.EvmApi.nft.getWalletNFTs({
-  //     chain,
-  //     address,
-  //   });
-  //   const { result } = response;
-  //   const nftList = result.map((nft) => {
-  //     const metadata = nft.metadata as unknown as Metadata;
-  //     if (metadata && metadata.image.startsWith("ipfs://")) {
-  //       const image = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
-  //       return image;
-  //     } else {
-  //       return undefined;
-  //     }
-  //   });
-  //   console.log(nftList.filter((nft) => nft !== undefined));
-  //   return nftList.filter((nft) => nft !== undefined);
-  // console.log(nftList); //replace.("ipfs://", "https://ipfs.io/ipfs")
-  // return nftList;
 };
 
 export const useGetUserNfts = () => {

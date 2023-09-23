@@ -1,11 +1,12 @@
+import { fetchAllProfiles } from "@/api/firebase";
 import { useQuery } from "@tanstack/react-query";
-import { useAccount } from "wagmi";
-import { fetchUserProfiles } from "@/api/firebase";
 import axios from "axios";
+import { useAccount } from "wagmi";
 
-export const getUserProfileApi = async (address: string) => {
+const getAllProfilesApi = async () => {
+  console.log("here");
   const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/${address}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/all`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -13,20 +14,19 @@ export const getUserProfileApi = async (address: string) => {
       },
     }
   );
-  return res.data?.profile;
+  console.log(res.data);
+  return res.data?.profiles;
 };
 
-export const useGetUserProfile = () => {
+export const useGetAllProfiles = () => {
   const { address, isConnected } = useAccount();
-
   const enabled = isConnected && address !== undefined;
   return useQuery({
     enabled,
-    queryKey: ["profile by address", address],
+    queryKey: ["fetch all profiles"],
     queryFn: async () => {
       if (!enabled) throw new Error("Not connected");
-      return fetchUserProfiles(address);
-      // return getUserProfileApi(address);
+      return getAllProfilesApi();
     },
   });
 };

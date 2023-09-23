@@ -2,8 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAccount } from "wagmi";
-import { setNftApproval } from "./smartContract/setNftApproval";
-import { transferNft } from "./smartContract/transferNft";
+import { setNftApproval } from "@/api/smartContract/setNftApproval";
 
 interface SellerMessageProps {
   proposedNftTx: any;
@@ -23,12 +22,6 @@ export const SellerMessage = (props: SellerMessageProps) => {
     );
   }
 
-  const handleSellerAgree = async () => {
-    props.sellerAgree(tx);
-    const res = await setNftApproval(tx.contract, tx.tokenId);
-    console.log(res);
-  };
-
   if (tx.action === "BuyerProposed") {
     return (
       <div className="w-full">
@@ -46,7 +39,7 @@ export const SellerMessage = (props: SellerMessageProps) => {
           </button>
           <button
             className="px-2  border border-gray-400 rounded-lg"
-            onClick={handleSellerAgree}
+            onClick={() => props.sellerAgree(tx)}
           >
             Yes
           </button>
@@ -78,13 +71,6 @@ interface BuyerMessageProp {
 export const BuyerMessage = (props: BuyerMessageProp) => {
   const tx = props.proposedNftTx;
 
-  const handleTransferNft = async () => {
-    props.executeTransfer();
-    const res = await transferNft(tx.seller, tx.buyer, tx.tokenId, tx.price);
-    console.log(res);
-  };
-  // console.log("buyer");
-  // console.log(tx);
   if (tx.action === "BuyerProposed") {
     return (
       <div className="break-words ">
@@ -131,7 +117,7 @@ export const BuyerMessage = (props: BuyerMessageProp) => {
         <div className="mt-2 flex justify-center">
           <button
             className="px-2  border border-gray-400 rounded-lg"
-            onClick={handleTransferNft}
+            onClick={() => props.executeTransfer(tx)}
           >
             Execute
           </button>
@@ -161,8 +147,15 @@ export const TransactionModal = (props: TransactionModalProps) => {
     setPrice(e.target.value);
   };
 
-  const proposeTx = (action: string) => {
+  const proposeTx = async (action: string) => {
     props.handleSendMessage({ ...proposedNftTx, price: Number(price), action });
+    if (action === "OwnerProposed") {
+      const res = await setNftApproval(
+        proposedNftTx.contract,
+        proposedNftTx.tokenId
+      );
+    }
+
     props.setModalOn(false);
   };
 

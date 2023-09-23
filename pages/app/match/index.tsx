@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { ConversationV2 } from "@xmtp/xmtp-js";
 import Swipe from "@/components/swipe";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
@@ -6,8 +7,12 @@ import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import { swipeRight } from "@/api/firebase";
 import { dir } from "console";
+import { useGetAllProfiles } from "@/hooks/useGetAllProfiles";
+import { useGetUserMatched } from "@/hooks/useGetUserMatched";
+// import useXmtp from "@/hooks/useXmtp";
+// import { useGetXmtpClient } from "@/hooks/useGetXmtpClient";
 
-const db = [
+const data = [
   {
     address: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
     introduction: "Hi",
@@ -22,7 +27,7 @@ const db = [
     username: "sloth 1",
   },
   {
-    address: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+    address: "0x2eD5018aaFB2sC969FF443c95D5CD2d21cB709aA",
     introduction: "Hey yo",
     labels: ["Game"],
     nfts: [
@@ -50,16 +55,18 @@ const db = [
 ];
 
 export default function Match() {
+  const { data, isLoading } = useGetUserMatched();
   const { address, isConnected } = useAccount();
   const router = useRouter();
-  const [currIndex, setCurrIndex] = useState<number>(db.length - 1);
+  const [currIndex, setCurrIndex] = useState<number>(0);
   const [lastDirection, setLastDirection] = useState<string | undefined>();
   const currIndexRef = useRef(currIndex);
   const childRefs = useMemo(() => {
-    return Array(db.length)
+    if (data === undefined) return [];
+    return Array(data.length)
       .fill(0)
       .map((i) => React.createRef<any>());
-  }, []);
+  }, [data]);
 
   const updateCurrIndex = (idx: number) => {
     setCurrIndex(idx);
@@ -70,9 +77,15 @@ export default function Match() {
     setLastDirection(direction);
     updateCurrIndex(index - 1);
     if (direction === "right") {
+      console.log(address, cardAddress);
       const matched = await swipeRight(address as string, cardAddress);
       if (matched) {
         alert("Match!!!");
+        // if (xmtp && xmtp.client !== undefined) {
+        //   (await xmtp.client.conversations.newConversation(
+        //     cardAddress
+        //   )) as ConversationV2<String>;
+        // }
       }
     }
   };
@@ -91,9 +104,21 @@ export default function Match() {
       router.replace("/");
     }
   }, [isConnected, router]);
+
+  useEffect(() => {
+    if (data) {
+      setCurrIndex(data.length - 1);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  console.log(data);
   return (
     <Swipe
-      cardDeck={db.length}
+      cardDeck={data.length}
       currIndex={currIndex}
       setCurrIndex={setCurrIndex}
       currIndexRef={currIndexRef}
@@ -101,7 +126,7 @@ export default function Match() {
       lastDirection={lastDirection}
       setLastDirection={setLastDirection}
     >
-      {db.map((profile, index) => (
+      {data.map((profile: any, index: number) => (
         <TinderCard
           ref={childRefs[index]}
           className="absolute w-full flex justify-center"

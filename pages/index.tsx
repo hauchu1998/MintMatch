@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAccount, useConnect, useQuery } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { useGetUserProfile } from "@/hooks/useGetUserProfile";
 
@@ -13,9 +13,14 @@ export default function Home() {
     connector: new InjectedConnector(),
   });
 
+  const connectWallet = async () => {
+    connect();
+  };
+
   useEffect(() => {
     if (isLoading) return;
-    if (data.address) {
+    console.log(data);
+    if (data && data.address) {
       router.push("/app/match");
     } else {
       router.push("/app/register");
@@ -37,7 +42,7 @@ export default function Home() {
       {!isConnected ? (
         <button
           className="absolute top-3/4 w-[40%] font-bold text-[#195573] border-[#195573] border-4 px-1 py-2 rounded-full hover:text-white hover:border-white hover:bg-[#195573]"
-          onClick={() => connect()}
+          onClick={connectWallet}
         >
           Connect Wallet
         </button>

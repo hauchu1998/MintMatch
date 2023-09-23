@@ -4,6 +4,7 @@ import { WagmiConfig, createConfig } from "wagmi";
 import { createPublicClient, http } from "viem";
 import { polygonMumbai } from "viem/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { XMTPProvider } from "@xmtp/react-sdk";
 import BaseApp from "@/components/baseApp";
 
 const config = createConfig({
@@ -23,11 +24,13 @@ export const queryClient = new QueryClient({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={config}>
-      <QueryClientProvider client={queryClient}>
-        <BaseApp>
-          <Component {...pageProps} />
-        </BaseApp>
-      </QueryClientProvider>
+      <XMTPProvider>
+        <QueryClientProvider client={queryClient}>
+          <BaseApp>
+            <Component {...pageProps} />
+          </BaseApp>
+        </QueryClientProvider>
+      </XMTPProvider>
     </WagmiConfig>
   );
 }

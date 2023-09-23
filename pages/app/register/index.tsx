@@ -11,8 +11,9 @@ export default function Register() {
 
   const handleSubmit = async (data: any) => {
     if (!isConnected || address === undefined) throw new Error("Not connected");
-    await updateUserProfile(address, data);
-    router.push("/app/profile");
+    await updateUserProfile(address, data).then((_) => {
+      router.push("/app/profile");
+    });
   };
 
   useEffect(() => {

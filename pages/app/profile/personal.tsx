@@ -10,6 +10,10 @@ export default function Personal() {
   const { data, isLoading } = useGetUserProfile();
 
   if (!isLoading && !data) {
+    <div>Loading</div>;
+  }
+
+  if (data && !data.address) {
     router.push("/app/register");
   }
 

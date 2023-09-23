@@ -7,8 +7,8 @@ import { BsImages } from "react-icons/bs";
 import { IoSend, IoHammerOutline } from "react-icons/io5";
 import { TransactionModal } from "@/components/nftTransaction";
 import { SellerMessage, BuyerMessage } from "@/components/nftTransaction";
-import { setNftApproval } from "@/components/smartContract/setNftApproval";
-import { transferNft } from "@/components/smartContract/transferNft";
+import { setNftApproval } from "@/api/smartContract/setNftApproval";
+import { transferNft } from "@/api/smartContract/transferNft";
 import NftsModal from "@/components/nftsModal";
 
 export interface NftMessage {
@@ -198,7 +198,7 @@ export default function ChatRoom() {
 
   const handleSellerAgree = async (tx: any) => {
     try {
-      const hash = await setNftApproval(tx.contract, tx.tokenId);
+      const res = await setNftApproval(tx.contract, tx.tokenId);
       const nextStep = {
         action: "SellerAgree",
         contract: tx.contract,
@@ -214,7 +214,7 @@ export default function ChatRoom() {
         {
           from: "system",
           type: "text",
-          message: `NFT owner approved the transaction, tx hash: ${hash} on Mumbai`,
+          message: `NFT owner approved the transaction, tx hash: ${res.hash} on Mumbai`,
           timestamp: getTimestamp(),
         },
         {
@@ -296,17 +296,24 @@ export default function ChatRoom() {
 
   const handleExecuteTransfer = async (tx: any) => {
     try {
-      const hash = await transferNft(tx.seller, tx.buyer, tx.tokenId, tx.price);
+      console.log(tx);
+      const res = await transferNft(
+        tx.seller,
+        tx.contract,
+        tx.tokenId,
+        tx.price
+      );
       setChatHistory((prev) => [
         ...prev,
         {
           from: "system",
           type: "text",
-          message: `NFT transfer success, tx hash: ${hash} on Mumbai`,
+          message: `NFT transfer success, tx hash: ${res.hash} on Mumbai`,
           timestamp: getTimestamp(),
         },
       ]);
     } catch (e) {
+      console.log(e);
       setChatHistory((prev) => [
         ...prev,
         {
@@ -353,15 +360,33 @@ export default function ChatRoom() {
   const handleSendTx = (tx: any) => {
     if (address === undefined) return;
 
-    setChatHistory((prev) => [
-      ...prev,
-      {
-        from: address,
-        type: "tx",
-        message: JSON.stringify(tx),
-        timestamp: getTimestamp(),
-      },
-    ]);
+    if (tx.action === "OwnerProposed") {
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          from: address,
+          type: "tx",
+          message: JSON.stringify(tx),
+          timestamp: getTimestamp(),
+        },
+        {
+          from: "system",
+          type: "text",
+          message: `NFT owner approved the transaction`,
+          timestamp: getTimestamp(),
+        },
+      ]);
+    } else {
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          from: address,
+          type: "tx",
+          message: JSON.stringify(tx),
+          timestamp: getTimestamp(),
+        },
+      ]);
+    }
     setTextMessage("");
     scrollToBottom();
   };
