@@ -14,12 +14,13 @@ export default function Home() {
   });
 
   useEffect(() => {
-    if (data?.address && data?.profile) {
+    if (isLoading) return;
+    if (data) {
       router.push("/app/match");
-    } else if (data?.address && data?.profile == undefined) {
+    } else {
       router.push("/app/register");
     }
-  }, [data, router]);
+  }, [data, isLoading, router]);
 
   return (
     <main className="absolute top-0 flex h-screen w-full flex-col items-center justify-center z-50">

@@ -18,7 +18,6 @@ interface ProfileInfo {
 const labels = ["Art", "Game", "Tech", "Cute", "Sports", "Animals", "Music"];
 
 export default function ProfileForm(props: ProfileFormProps) {
-  const router = useRouter();
   const [selectedNfts, setSelectedNfts] = useState<any[] | undefined>(
     props.profile?.nfts
   );
@@ -158,6 +157,7 @@ export default function ProfileForm(props: ProfileFormProps) {
         setSelectedNfts={setSelectedNfts}
         modalOn={modalOn}
         setModalOn={setModalOn}
+        maxLength={4}
       />
     </div>
   );

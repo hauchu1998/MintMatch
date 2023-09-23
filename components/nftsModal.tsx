@@ -8,6 +8,7 @@ interface NftsModalProps {
   setSelectedNfts: Function;
   modalOn: boolean;
   setModalOn: Function;
+  maxLength: number;
 }
 
 // const nftList = [
@@ -18,21 +19,23 @@ interface NftsModalProps {
 
 export default function NftsModal(props: NftsModalProps) {
   const { data: nftList, isLoading } = useGetUserNfts();
-  const [nftsSelection, setNftsSelection] = useState<string[] | undefined>(
+  const [nftsSelection, setNftsSelection] = useState<any[] | undefined>(
     props.selectedNfts
   );
 
   const checkIfInclude = (list: any[] | undefined, item: any) => {
     if (list === undefined) return false;
-    return list.includes(item);
+    return list.filter((nft) => nft.tokenUri === item.tokenUri).length > 0;
   };
 
-  const handleSelectedNfts = (nft: string) => {
+  const handleSelectedNfts = (nft: any) => {
     if (nftsSelection === undefined || nftsSelection.length === 0) {
       setNftsSelection([nft]);
     } else if (checkIfInclude(nftsSelection, nft)) {
-      setNftsSelection(nftsSelection.filter((item) => item !== nft));
-    } else if (nftsSelection && nftsSelection.length < 4) {
+      setNftsSelection(
+        nftsSelection.filter((item) => item.tokenUri !== nft.tokenUri)
+      );
+    } else if (nftsSelection && nftsSelection.length < props.maxLength) {
       setNftsSelection([...nftsSelection, nft]);
     } else {
       alert("You can only select 4 NFTs");
@@ -54,7 +57,7 @@ export default function NftsModal(props: NftsModalProps) {
     <div
       className={`${
         props.modalOn ? "visible" : "hidden"
-      } fixed top-32 left-1/2 -translate-x-1/2 bg-black bg-opacity-90 w-[90%] h-[600px] p-2 overflow-scroll`}
+      } fixed top-32 left-1/2 -translate-x-1/2 bg-black bg-opacity-90 w-[90%] h-[600px] p-2 rounede-lg overflow-scroll`}
     >
       <div className="relative w-full h-full">
         <div className="fixed top-0 w-full text-center font-bold text-xl text-white bg-black py-3 z-10">
@@ -87,7 +90,7 @@ export default function NftsModal(props: NftsModalProps) {
                   />
                   {
                     //   @ts-ignore
-                    nftsSelection && nftsSelection.includes(nft) && (
+                    checkIfInclude(nftsSelection, nft) && (
                       <div className="absolute top-3 left-3">
                         <AiFillCheckCircle className="text-green-400 text-4xl" />
                       </div>

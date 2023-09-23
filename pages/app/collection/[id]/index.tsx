@@ -72,7 +72,7 @@ export default function NftCollection() {
           <div className="w-full px-2 py-1 border-b border-[#195573] text-[#195573] text-xl">
             Price
           </div>
-          <div className="text-lg">{data?.price} ETH</div>
+          <div className="text-lg">{data?.price} MATIC</div>
         </div>
         <div className="mt-5 w-full ">
           <div className="w-full px-2 py-1 border-b border-[#195573] text-[#195573] text-xl">

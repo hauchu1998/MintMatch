@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineReload } from "react-icons/ai";
 import { ImCross } from "react-icons/im";
+import { swipeRight } from "@/api/firebase";
+import { useAccount } from "wagmi";
 
 interface SwipeProps {
   cardDeck: number;
@@ -14,6 +16,7 @@ interface SwipeProps {
 }
 
 export default function Swipe(props: SwipeProps) {
+  const { address } = useAccount();
   const cardDeck = props.cardDeck;
   const currIndex = props.currIndex;
   const [canGoBack, setCanGoBack] = useState<boolean>(true);
@@ -24,11 +27,16 @@ export default function Swipe(props: SwipeProps) {
     props.currIndexRef.current = idx;
   };
 
-  const swipeCard = async (dir: string) => {
-    if (canSwipe && currIndex < cardDeck) {
-      await props.childRefs[currIndex].current.swipe(dir);
+const swipeCard = async (dir: string) => {
+  if (canSwipe && currIndex < cardDeck) {
+    await props.childRefs[currIndex].current.swipe(dir);
+    const cardData = props.childRefs[currIndex].current.getCardData();
+    if (cardData.match) {
+      // Redirect to chatroom
+      window.location.href = `/chat/${cardData.match}`;
     }
-  };
+  }
+};
 
   // increase current index and show card
   const goBack = async () => {
@@ -85,6 +93,7 @@ export default function Swipe(props: SwipeProps) {
         ) : (
           <div className="mt-5 w-full text-xl  text-center font-bold">
             Swipe a card or press a button to get Restore Card button visible!
+            
           </div>
         )}
       </div>

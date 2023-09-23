@@ -37,7 +37,7 @@ export default function Match() {
     currIndexRef.current = idx;
   };
 
-  const swiped = (direction: any, index: number) => {
+  const swiped = async (direction: any, index: number) => {
     setLastDirection(direction);
     updateCurrIndex(index - 1);
   };

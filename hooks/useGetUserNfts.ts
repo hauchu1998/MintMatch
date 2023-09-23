@@ -23,7 +23,8 @@ const fetchUserNftsByWallet = async (address: string) => {
     if (
       nft.tokenUri &&
       nft.rawMetadata &&
-      nft.rawMetadata.image?.startsWith("ipfs://")
+      (nft.rawMetadata.image?.startsWith("ipfs://") ||
+        nft.rawMetadata.image?.startsWith("https://ipfs.io/ipfs/"))
     ) {
       const image = nft.rawMetadata.image.replace(
         "ipfs://",
