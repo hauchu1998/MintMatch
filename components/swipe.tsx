@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineReload } from "react-icons/ai";
 import { ImCross } from "react-icons/im";
+import { swipeRight } from "@/api/firebase";
+import { useAccount } from "wagmi";
 
 interface SwipeProps {
   cardDeck: number;
@@ -14,6 +16,7 @@ interface SwipeProps {
 }
 
 export default function Swipe(props: SwipeProps) {
+  const { address } = useAccount();
   const cardDeck = props.cardDeck;
   const currIndex = props.currIndex;
   const [canGoBack, setCanGoBack] = useState<boolean>(true);

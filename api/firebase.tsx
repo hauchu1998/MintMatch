@@ -33,6 +33,20 @@ export const updateUserProfile = async (address: string, profile: any) => {
   return res;
 };
 
+export const swipeRight = async (address: string, cardAddress: string) => {
+  const db = getDatabase(app);
+  const currDbRef = ref(db, "likes/" + cardAddress);
+
+  get(child(currDbRef, address)).then((snapshot) => {
+    if (snapshot.exists()) {
+      return true; // match
+    } else {
+      const dbRef = ref(db, "likes/" + address + "/" + cardAddress);
+      set(dbRef, "liked");
+    }
+  });
+};
+
 // export const delete_profile = async (address: string) => {
 //   const dbRef = ref(getDatabase(app), `profile/${address}`);
 //   const res = remove(dbRef);
