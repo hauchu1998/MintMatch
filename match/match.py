@@ -30,15 +30,15 @@ def mapLabels(labels: List[str]) -> List[int]:
 
 # Returns [(useraddress, [mappings])]
 # users with their labels mapped to 0 or 1
-def getUsers(user_profiles: dict) -> List[Tuple]:
+def getUsers(user_profiles: dict, user_to_match_address: str) -> List[Tuple]:
     users = []
     for user in user_profiles["profiles"]:
         try:
           user_address = user_profiles["profiles"][user]["address"]
-          user_labels = user_profiles["profiles"][user]["labels"]
-
-          mapped_user_labels = mapLabels(user_labels)
-          users.append((user_address, mapped_user_labels))
+          if user_address != user_to_match_address:
+            user_labels = user_profiles["profiles"][user]["labels"]
+            mapped_user_labels = mapLabels(user_labels)
+            users.append((user_address, mapped_user_labels))
 
         except KeyError as e:
             print(f"User does not exist!: {e}")
@@ -104,11 +104,11 @@ def main(user_address: str) -> List[dict]:
         
     user_to_match = (user_address, user_labels) #get mapped labels for user to match
 
-    all_users = getUsers(user_profiles) #map user's labels so they can be compared
+    all_users = getUsers(user_profiles, user_address) #map user's labels so they can be compared
     ordered_addresses = findMatches(user_to_match, all_users) #get rank of user addresses based on their labels
 
     profiles = getProfiles(ordered_addresses, user_profiles) #conver ordered addresses into ordered profiles
 
     return profiles
 
-# print(main("0x123"))
+print(main("0x123"))
