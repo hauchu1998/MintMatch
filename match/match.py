@@ -2,6 +2,8 @@ from typing import List, Tuple
 from queue import PriorityQueue
 import requests
 
+#Call main(address) with the address of the user who you want matches for
+#Returns matches in order of similarity (ranked by labels)
 
 #Fixed mapping to represent each label
 label_map = {
@@ -16,7 +18,7 @@ label_map = {
 
 
 #returns a list representing whether or not (1 or 0) a label is in the list 
-def map_labels(labels: List[str]) -> List[int]:
+def mapLabels(labels: List[str]) -> List[int]:
     mapped_lst = [0] * len(label_map)
 
     for label in labels:
@@ -28,14 +30,19 @@ def map_labels(labels: List[str]) -> List[int]:
 
 # Returns [(useraddress, [mappings])]
 # users with their labels mapped to 0 or 1
-def getUsers(user_profiles) -> List[Tuple]:
+def getUsers(user_profiles: dict) -> List[Tuple]:
     users = []
     for user in user_profiles["profiles"]:
-        user_address = user_profiles["profiles"][user]["address"]
-        user_labels = user_profiles["profiles"][user]["labels"]
+        try:
+          user_address = user_profiles["profiles"][user]["address"]
+          user_labels = user_profiles["profiles"][user]["labels"]
 
-        mapped_user_labels = map_labels(user_labels)
-        users.append((user_address, mapped_user_labels))
+          mapped_user_labels = mapLabels(user_labels)
+          users.append((user_address, mapped_user_labels))
+
+        except KeyError as e:
+            print(f"User does not exist!: {e}")
+            continue 
 
     return users
 
@@ -71,18 +78,33 @@ def getProfiles(addresses: List[str], user_profiles: dict) -> List[dict]:
     return profiles
 
 
-def main():
-    user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])  # example user to match
+#Returns the mapped labels for a single user
+#input: address (string)
+#output: mapped labels (list[int])
+def getLabels(address: str, user_profiles: dict) -> List[int]:
+    try:
+      user_profile = user_profiles['profiles'][address]
+      user_labels = user_profile['labels']
+      return mapLabels(user_labels)
+    except KeyError as e:
+        print(f"User does not exist!: {e}")
+        return []
+        
+
+def main(user_address: str) -> List[dict]:
 
     request = requests.get("https://43b5-208-123-173-93.ngrok-free.app/profile/all") #get all users
     user_profiles = request.json()
 
-    users = getUsers(user_profiles) #map user's labels so they can be compared
-    ordered_addresses = findMatches(user, users) #get rank of user addresses based on their labels
+    userLabels = getLabels(user_address, user_profiles) #get labels for the user to match
+    user_to_match = (user_address, userLabels) #get mapped labels for user to match
+
+    all_users = getUsers(user_profiles) #map user's labels so they can be compared
+    ordered_addresses = findMatches(user_to_match, all_users) #get rank of user addresses based on their labels
 
     profiles = getProfiles(ordered_addresses, user_profiles) #conver ordered addresses into ordered profiles
 
     return profiles
 
 
-main()
+# print(main("0x123"))
