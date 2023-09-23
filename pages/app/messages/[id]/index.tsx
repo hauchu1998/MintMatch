@@ -122,7 +122,7 @@ type ChatHistory = {
 };
 
 interface ChatRoomProps {
-  roodId: string;
+  roomId: string;
   host: string;
   hostUsername: string;
   hostProfile: string;
