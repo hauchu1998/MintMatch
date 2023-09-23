@@ -87,6 +87,7 @@ export default function Swipe(props: SwipeProps) {
         ) : (
           <div className="mt-5 w-full text-xl  text-center font-bold">
             Swipe a card or press a button to get Restore Card button visible!
+            if 
           </div>
         )}
       </div>
