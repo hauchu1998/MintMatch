@@ -149,7 +149,7 @@ export const TransactionModal = (props: TransactionModalProps) => {
   };
 
   return (
-    <div className="fixed top-32 left-1/2 -translate-x-1/2 bg-blue-950 w-[90%] rounded-lg flex flex-col items-center p-2 ">
+    <div className="fixed top-32 left-1/2 -translate-x-1/2 bg-blue-950 w-[90%] rounded-lg flex flex-col items-center p-2 text-white">
       <button
         className="fixed top-2 right-2 font-bold text-2xl  z-20"
         onClick={closeModal}

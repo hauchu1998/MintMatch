@@ -1,14 +1,15 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { WagmiConfig, createConfig, mainnet } from "wagmi";
+import { WagmiConfig, createConfig } from "wagmi";
 import { createPublicClient, http } from "viem";
+import { polygonMumbai } from "viem/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BaseApp from "@/components/baseApp";
 
 const config = createConfig({
   autoConnect: true,
   publicClient: createPublicClient({
-    chain: mainnet,
+    chain: polygonMumbai,
     transport: http(),
   }),
 });

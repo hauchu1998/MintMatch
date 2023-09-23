@@ -26,10 +26,10 @@ export const fetchUserProfiles = async (address: string) => {
 export const updateUserProfile = async (address: string, profile: any) => {
   const dbRef = ref(getDatabase(app), `profile/${address}`);
   const res = await set(dbRef, { address, ...profile });
-  // await queryClient.fetchQuery({
-  //   queryKey: fetchUserProfiles(address),
-  //   queryFn: () => dasByOwnerQueryFn(network, owner),
-  // })
+
+  queryClient.invalidateQueries({
+    queryKey: ["profile by address", address],
+  });
   return res;
 };
 
