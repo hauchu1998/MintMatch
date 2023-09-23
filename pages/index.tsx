@@ -4,22 +4,6 @@ import { useEffect } from "react";
 import { useAccount, useConnect, useQuery } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { useGetUserProfile } from "@/hooks/useGetUserProfile";
-import axios from "axios";
-
-const fetchdata = async () => {
-  const res = await axios.get(
-    "https://04d5-172-58-238-198.ngrok-free.app/profile/0x123455789111",
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  console.log(res.data);
-  return res.data;
-};
-
-fetchdata();
 
 export default function Home() {
   const router = useRouter();
