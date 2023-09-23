@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isLoading) return;
-    if (data) {
+    if (data.address) {
       router.push("/app/match");
     } else {
       router.push("/app/register");

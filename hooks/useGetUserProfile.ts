@@ -5,7 +5,7 @@ import axios from "axios";
 
 export const getUserProfileApi = async (address: string) => {
   const res = await axios.get(
-    `https://04d5-172-58-238-198.ngrok-free.app/profile/${address}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/${address}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -13,6 +13,7 @@ export const getUserProfileApi = async (address: string) => {
       },
     }
   );
+
   return res.data;
 };
 

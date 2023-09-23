@@ -2,6 +2,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAccount } from "wagmi";
+import { setNftApproval } from "./smartContract/setNftApproval";
+import { transferNft } from "./smartContract/transferNft";
 
 interface SellerMessageProps {
   proposedNftTx: any;
@@ -21,6 +23,12 @@ export const SellerMessage = (props: SellerMessageProps) => {
     );
   }
 
+  const handleSellerAgree = async () => {
+    props.sellerAgree(tx);
+    const res = await setNftApproval(tx.contract, tx.tokenId);
+    console.log(res);
+  };
+
   if (tx.action === "BuyerProposed") {
     return (
       <div className="w-full">
@@ -38,7 +46,7 @@ export const SellerMessage = (props: SellerMessageProps) => {
           </button>
           <button
             className="px-2  border border-gray-400 rounded-lg"
-            onClick={() => props.sellerAgree(tx)}
+            onClick={handleSellerAgree}
           >
             Yes
           </button>
@@ -69,6 +77,12 @@ interface BuyerMessageProp {
 
 export const BuyerMessage = (props: BuyerMessageProp) => {
   const tx = props.proposedNftTx;
+
+  const handleTransferNft = async () => {
+    props.executeTransfer();
+    const res = await transferNft(tx.seller, tx.buyer, tx.tokenId, tx.price);
+    console.log(res);
+  };
   // console.log("buyer");
   // console.log(tx);
   if (tx.action === "BuyerProposed") {
@@ -82,44 +96,48 @@ export const BuyerMessage = (props: BuyerMessageProp) => {
   }
 
   if (tx.action === "OwnerProposed") {
-    <div className="w-full">
-      <div className="w-full break-words ">
-        <span className="text-yellow-400">{tx.owner}</span> proposed to sell you
-        a NFT which token ID is {tx.tokenId} on contract {tx.contract} in{" "}
-        {tx.price} MATIC.Do you agree?
+    return (
+      <div className="w-full">
+        <div className="w-full break-words ">
+          <span className="text-yellow-400">{tx.owner}</span> proposed to sell
+          you a NFT which token ID is {tx.tokenId} on contract {tx.contract} in{" "}
+          {tx.price} MATIC.Do you agree?
+        </div>
+        <div className="mt-2 flex justify-center gap-3">
+          <button
+            className="px-2  border border-gray-400"
+            onClick={() => props.buyerDeny()}
+          >
+            No
+          </button>
+          <button
+            className="px-2  border border-gray-400"
+            onClick={() => props.buyerAgree(tx)}
+          >
+            Yes
+          </button>
+        </div>
       </div>
-      <div className="mt-2 flex justify-center gap-3">
-        <button
-          className="px-2  border border-white"
-          onClick={() => props.buyerDeny()}
-        >
-          No
-        </button>
-        <button
-          className="px-2  border border-white"
-          onClick={() => props.buyerAgree(tx)}
-        >
-          Yes
-        </button>
-      </div>
-    </div>;
+    );
   }
 
   if (tx.action === "SellerAgree") {
-    <div className="w-full">
-      <div className="w-full break-words ">
-        <span className="text-yellow-400">{tx.owner}</span> agree on your
-        proposal. Please execute the transfer process!
+    return (
+      <div className="w-full">
+        <div className="w-full break-words ">
+          <span className="text-yellow-400">{tx.seller}</span> agree on your
+          proposal. Please execute the transfer process!
+        </div>
+        <div className="mt-2 flex justify-center">
+          <button
+            className="px-2  border border-gray-400 rounded-lg"
+            onClick={handleTransferNft}
+          >
+            Execute
+          </button>
+        </div>
       </div>
-      <div className="mt-2 flex justify-center">
-        <button
-          className="px-2  border border-white"
-          onClick={() => props.executeTransfer()}
-        >
-          Execute
-        </button>
-      </div>
-    </div>;
+    );
   }
 };
 

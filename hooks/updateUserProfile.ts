@@ -3,7 +3,7 @@ import axios from "axios";
 
 const registerUserProfileApi = async (address: string, profile: any) => {
   const res = await axios.post(
-    `https://04d5-172-58-238-198.ngrok-free.app/profile/${address}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/${address}`,
     { address, ...profile },
     {
       headers: {
@@ -21,7 +21,7 @@ const registerUserProfileApi = async (address: string, profile: any) => {
 
 const updateUserProfileApi = async (address: string, profile: any) => {
   const res = await axios.post(
-    `https://04d5-172-58-238-198.ngrok-free.app/profile/${address}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/${address}`,
     { address, ...profile },
     {
       headers: {

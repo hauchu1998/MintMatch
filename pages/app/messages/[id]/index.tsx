@@ -98,15 +98,33 @@ const chatHistory_db = [
     timestamp: "7:00 PM",
   },
   {
-    from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+    from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
     type: "tx",
     message: JSON.stringify({
       action: "BuyerProposed",
-      contract: "0x1234...5678",
-      seller: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-      buyer: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
-      tokenId: 0,
-      tokenUri: "Mn9hFs-fpKnO3QZbpqQCnbQB_gbTrWjUalO969wfK-LoQcdD4KQwf7wZwD-34",
+      contract: "0xeaebeaa8907806c975e5f48dba8b84fb5d1bd4be",
+      seller: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+      buyer: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+      tokenId: 2,
+      tokenUri:
+        "https://ipfs.io/ipfs/QmdhJZtD7rkS1tnfKqCZ21FYyyjNKPrA5LYedt2ZABFYN8/3",
+      image:
+        "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
+      price: 0.001,
+    }),
+    timestamp: "7:00 PM",
+  },
+  {
+    from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+    type: "tx",
+    message: JSON.stringify({
+      action: "SellerAgree",
+      contract: "0xeaebeaa8907806c975e5f48dba8b84fb5d1bd4be",
+      seller: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+      buyer: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+      tokenId: 2,
+      tokenUri:
+        "https://ipfs.io/ipfs/QmdhJZtD7rkS1tnfKqCZ21FYyyjNKPrA5LYedt2ZABFYN8/3",
       image:
         "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
       price: 0.001,
@@ -157,7 +175,7 @@ export default function ChatRoom() {
   const messagesEndRef = useRef<any>(null);
 
   const onClickNft = (owner: string, nft: any) => {
-    const buyer = roomInfo.host === owner ? roomInfo.guest : roomInfo.host;
+    const buyer = address === owner ? roomInfo.guest : roomInfo.host;
     setProposedNftTx({ ...nft, seller: owner, buyer });
     setTxModalOn(true);
   };
@@ -167,7 +185,7 @@ export default function ChatRoom() {
   };
 
   const isHost = (from: string) => {
-    return from === roomInfo.host;
+    return from === address;
   };
 
   const getTimestamp = () => {
@@ -220,6 +238,7 @@ export default function ChatRoom() {
 
     scrollToBottom();
   };
+
   const handleSellerDeny = () => {
     setChatHistory((prev) => [
       ...prev,
@@ -232,6 +251,7 @@ export default function ChatRoom() {
     ]);
     scrollToBottom();
   };
+
   const handleBuyerAgree = (tx: any) => {
     const nextStep = {
       action: "SellerAgree",
@@ -273,6 +293,7 @@ export default function ChatRoom() {
     ]);
     scrollToBottom();
   };
+
   const handleExecuteTransfer = async (tx: any) => {
     try {
       const hash = await transferNft(tx.seller, tx.buyer, tx.tokenId, tx.price);
@@ -389,19 +410,19 @@ export default function ChatRoom() {
                 : chat.type === "tx"
                 ? (JSON.parse(chat.message) as TxMessage)
                 : chat.message;
+
             if (chat.from === "system") {
               return (
                 <div
                   key={chat.from + idx}
                   className="w-full flex justify-center"
                 >
-                  <div className="mt-5 w-[75%] px-3 py-2 text-center text-sm text-white bg-blue-950 border-2 border-white rounded-full">
+                  <div className="mt-5 w-[75%] px-3 py-2 text-center text-sm text-white bg-blue-950 border-2 border-white rounded-full break-words">
                     {message as string}
                   </div>
                 </div>
               );
             }
-
             return (
               <div
                 key={chat.from + idx}
@@ -416,10 +437,9 @@ export default function ChatRoom() {
                       : "text-[#195573] bg-white"
                   } rounded-lg`}
                 >
-                  {chat.type === "text" && (
+                  {chat.type === "text" ? (
                     <div className="w-full break-words">{chat.message}</div>
-                  )}
-                  {chat.type === "nft" && (
+                  ) : chat.type === "nft" ? (
                     <div className="w-full flex justify-center">
                       <button
                         onClick={() =>
@@ -438,21 +458,23 @@ export default function ChatRoom() {
                         />
                       </button>
                     </div>
-                  )}
-                  {chat.type === "tx" &&
-                  (message as TxMessage).seller === address ? (
-                    <SellerMessage
-                      proposedNftTx={message as TxMessage}
-                      sellerAgree={handleSellerAgree}
-                      sellerDeny={handleSellerDeny}
-                    />
+                  ) : chat.type === "tx" ? (
+                    (message as TxMessage).seller === address ? (
+                      <SellerMessage
+                        proposedNftTx={message as TxMessage}
+                        sellerAgree={handleSellerAgree}
+                        sellerDeny={handleSellerDeny}
+                      />
+                    ) : (
+                      <BuyerMessage
+                        proposedNftTx={message as TxMessage}
+                        buyerAgree={handleBuyerAgree}
+                        buyerDeny={handleBuyerDeny}
+                        executeTransfer={handleExecuteTransfer}
+                      />
+                    )
                   ) : (
-                    <BuyerMessage
-                      proposedNftTx={message as TxMessage}
-                      buyerAgree={handleBuyerAgree}
-                      buyerDeny={handleBuyerDeny}
-                      executeTransfer={handleExecuteTransfer}
-                    />
+                    <></>
                   )}
                   <div className="text-sm text-gray-500 text-end">
                     {chat.timestamp}
