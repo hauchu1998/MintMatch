@@ -2,6 +2,7 @@ from typing import List, Tuple
 from queue import PriorityQueue
 import requests
 
+
 label_map = {
     "Art": 0,
     "Game": 1,
@@ -58,23 +59,27 @@ def findMatches(user_to_match: List, user_profiles: List[Tuple]) -> List[int]:
     return matches_users[::-1]  # rev order
 
 
-# def getProfiles(addresses: List[str]) -> List[dict]:
+def getProfiles(addresses: List[str], user_profiles: dict) -> List[dict]:
+    profiles = []
+    for address in addresses:
+        profile = user_profiles['profiles'][address]
+        profiles.append(profile)
+
+    return profiles
 
 
 def main():
-    request = requests.get("https://04d5-172-58-238-198.ngrok-free.app/profile/all")
-    user_profiles = request.json()
+  user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])  # example user to match
 
-    users = getUsers(user_profiles)
+  request = requests.get("https://43b5-208-123-173-93.ngrok-free.app/profile/all")
+  user_profiles = request.json()
 
-    user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])  # example user
-    ordered_addresses = findMatches(user, users)
+  users = getUsers(user_profiles)
+  ordered_addresses = findMatches(user, users)
 
-    print(ordered_addresses)
+  profiles = getProfiles(ordered_addresses, user_profiles)
+
+  return profiles
 
 
 main()
-# user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])
-# users = [[1,0,1],[0,0,1],[1,1,1],[0,0,0],[1,1,1],[0,1,1],[0,1,0]]
-# p = findMatches(user, users)
-# print(p)
