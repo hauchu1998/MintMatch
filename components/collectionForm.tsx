@@ -110,8 +110,8 @@ export default function CollectionForm(props: CollectionFormProps) {
                 className="w-40 h-40 rounded-lg"
                 src={image}
                 alt={`Collection Image}`}
-                width={200}
-                height={200}
+                width={20}
+                height={20}
                 priority
               />
             </div>

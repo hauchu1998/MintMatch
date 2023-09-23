@@ -34,8 +34,8 @@ export default function Home() {
           className="w-[80%]"
           src="/logo.png"
           alt="Mint Match Logo"
-          width={516}
-          height={288}
+          width={51}
+          height={28}
           priority
         />
       </div>

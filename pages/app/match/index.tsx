@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import { swipeRight } from "@/api/firebase";
-import { dir } from "console";
+import { dir, profile } from "console";
 import { useGetAllProfiles } from "@/hooks/useGetAllProfiles";
 import { useGetUserMatched } from "@/hooks/useGetUserMatched";
 // import useXmtp from "@/hooks/useXmtp";
@@ -114,8 +114,7 @@ export default function Match() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  console.log(data);
+  console.log(data.map((profile: any) => profile.nfts[0].image));
   return (
     <Swipe
       cardDeck={data.length}
@@ -129,14 +128,14 @@ export default function Match() {
       {data.map((profile: any, index: number) => (
         <TinderCard
           ref={childRefs[index]}
-          className="absolute w-full flex justify-center"
+          className="absolute w-full flex justify-center bg-[#195573]"
           key={profile.address}
           onSwipe={(dir) => swiped(dir, index, profile.address)}
           onCardLeftScreen={() =>
             outOfFrame(profile.username || profile.address, index)
           }
         >
-          <div className="relative w-full h-[300px] rounded-lg">
+          <div className="relative w-full h-[300px] bg-[#195573] rounded-lg">
             <Image
               className="rounded-lg w-full h-[300px] border border-[#195573]"
               src={profile.nfts[0].image}

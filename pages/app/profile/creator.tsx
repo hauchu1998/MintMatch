@@ -40,8 +40,8 @@ export default function Creator() {
               src={collection.image}
               alt={collection.name}
               className="w-40 h-40 rounded-lg"
-              width={200}
-              height={200}
+              width={20}
+              height={20}
               priority
             />
           </Link>

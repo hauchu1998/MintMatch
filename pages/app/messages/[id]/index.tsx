@@ -415,8 +415,8 @@ export default function ChatRoom() {
           src={roomInfo.guestProfile}
           className="w-12 h-12 rounded-full"
           alt="guest profile"
-          width={80}
-          height={80}
+          width={10}
+          height={10}
           priority
         />
         <p className="text-lg">
@@ -477,8 +477,8 @@ export default function ChatRoom() {
                           alt={`${chat.from}'s NFT ${
                             (message as NftMessage).tokenUri
                           }`}
-                          width={200}
-                          height={200}
+                          width={20}
+                          height={20}
                           priority
                         />
                       </button>

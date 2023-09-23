@@ -121,8 +121,8 @@ export default function Explore() {
                 className="rounded-lg w-[80%] h-[240px] border border-[#195573]"
                 src={collection.image}
                 alt={`NFT${index}`}
-                width={300}
-                height={300}
+                width={30}
+                height={30}
                 priority
               />
             </div>
@@ -143,8 +143,8 @@ export default function Explore() {
                   className="rounded-lg w-full border border-[#195573]"
                   src={collection.image}
                   alt={`NFT${index}`}
-                  width={300}
-                  height={300}
+                  width={30}
+                  height={30}
                   priority
                 />
               ))}
