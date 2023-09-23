@@ -96,8 +96,13 @@ def main(user_address: str) -> List[dict]:
     request = requests.get("https://43b5-208-123-173-93.ngrok-free.app/profile/all") #get all users
     user_profiles = request.json()
 
-    userLabels = getLabels(user_address, user_profiles) #get labels for the user to match
-    user_to_match = (user_address, userLabels) #get mapped labels for user to match
+    user_labels = getLabels(user_address, user_profiles) #get labels for the user to match
+
+    if not user_labels:
+        print("No labels found for the user.")
+        return []
+        
+    user_to_match = (user_address, user_labels) #get mapped labels for user to match
 
     all_users = getUsers(user_profiles) #map user's labels so they can be compared
     ordered_addresses = findMatches(user_to_match, all_users) #get rank of user addresses based on their labels
