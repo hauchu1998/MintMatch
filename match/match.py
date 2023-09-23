@@ -62,24 +62,24 @@ def findMatches(user_to_match: List, user_profiles: List[Tuple]) -> List[int]:
 def getProfiles(addresses: List[str], user_profiles: dict) -> List[dict]:
     profiles = []
     for address in addresses:
-        profile = user_profiles['profiles'][address]
+        profile = user_profiles["profiles"][address]
         profiles.append(profile)
 
     return profiles
 
 
 def main():
-  user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])  # example user to match
+    user = ("useraddress", [1, 1, 1, 1, 0, 0, 0])  # example user to match
 
-  request = requests.get("https://43b5-208-123-173-93.ngrok-free.app/profile/all")
-  user_profiles = request.json()
+    request = requests.get("https://43b5-208-123-173-93.ngrok-free.app/profile/all")
+    user_profiles = request.json()
 
-  users = getUsers(user_profiles)
-  ordered_addresses = findMatches(user, users)
+    users = getUsers(user_profiles)
+    ordered_addresses = findMatches(user, users)
 
-  profiles = getProfiles(ordered_addresses, user_profiles)
+    profiles = getProfiles(ordered_addresses, user_profiles)
 
-  return profiles
+    return profiles
 
 
 main()
