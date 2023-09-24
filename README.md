@@ -1,5 +1,7 @@
 # MintMatch(to be documented)
 
+Think Matching but for NFTs.
+
 ### Run dev
 
 ```
@@ -11,3 +13,13 @@ npm run dev
 
 1. get into dev mode (cmd + shift + i or ctrl + shift + i)
 2. chose iphone12 pro frame
+
+
+### Features
+
+- [ ] User can connect to their wallet via MetaMask
+- [ ] User can swipe through NFT's that appears on their homepage
+- [ ] User can swipe right if they like the NFT
+- [ ] User can swipe left if they don't like the NFT
+- [ ] User can chat with other users about the NFT or interests
+- [ ] User can sell their NFT using smart contract which will transact the NFT to the buyer
