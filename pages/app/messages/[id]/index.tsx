@@ -214,7 +214,7 @@ export default function ChatRoom() {
         {
           from: "system",
           type: "text",
-          message: `NFT owner approved the transaction, tx hash: ${res.hash} on Mumbai`,
+          message: `NFT owner approved the transaction, tx hash: ${res} on Mumbai`,
           timestamp: getTimestamp(),
         },
         {
@@ -308,7 +308,7 @@ export default function ChatRoom() {
         {
           from: "system",
           type: "text",
-          message: `NFT transfer success, tx hash: ${res.hash} on Mumbai`,
+          message: `NFT transfer success, tx hash: ${res} on Mumbai`,
           timestamp: getTimestamp(),
         },
       ]);

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { ConversationV2 } from "@xmtp/xmtp-js";
+// import { ConversationV2 } from "@xmtp/xmtp-js";
 import Swipe from "@/components/swipe";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";

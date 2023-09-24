@@ -14,13 +14,9 @@ export default function Home() {
     connector: new InjectedConnector(),
   });
 
-  const connectWallet = async () => {
-    connect();
-  };
-
   useEffect(() => {
     if (isLoading) return;
-    if (data && data.address) {
+    if (data.address) {
       router.push("/app/match");
     } else {
       router.push("/app/register");
@@ -42,7 +38,7 @@ export default function Home() {
       {!isConnected ? (
         <button
           className="absolute top-3/4 w-[40%] font-bold text-[#195573] border-[#195573] border-4 px-1 py-2 rounded-full hover:text-white hover:border-white hover:bg-[#195573]"
-          onClick={connectWallet}
+          onClick={() => connect()}
         >
           Connect Wallet
         </button>
