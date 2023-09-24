@@ -1,6 +1,19 @@
 # MintMatch
 Think Matching but for NFTs.
 
+
+### Run backend
+
+```
+#requirements.txt
+pip install -r flask/requirements.txt
+```
+
+```
+#run
+python flask/app.py
+```
+
 ### Run dev
 
 ```
