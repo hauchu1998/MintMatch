@@ -1,3 +1,4 @@
+"use client";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { WagmiConfig, createConfig, mainnet } from "wagmi";
@@ -13,7 +14,7 @@ const config = createConfig({
   }),
 });
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: { staleTime: 10 * 60 * 1000, cacheTime: 30 * 60 * 1000 },
   },
