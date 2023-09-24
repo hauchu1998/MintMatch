@@ -1,5 +1,4 @@
-# MintMatch(to be documented)
-
+# MintMatch
 Think Matching but for NFTs.
 
 ### Run dev
