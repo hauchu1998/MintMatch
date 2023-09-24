@@ -23,3 +23,7 @@ npm run dev
 - [ ] User can chat with other users about the NFT or interests
 - [ ] User can sell their NFT using smart contract which will transact the NFT to the buyer
 - [ ] User can requests to buy NFT from other users using smart contract which will transact the NFT to the buyer
+
+### Demo
+
+- [Demo](https://www.canva.com/design/DAFvV3fdaGo/a77okZsEnezx90ybP_ZwJg/view?utm_content=DAFvV3fdaGo&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#1)
