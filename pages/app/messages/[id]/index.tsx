@@ -10,6 +10,7 @@ import { SellerMessage, BuyerMessage } from "@/components/nftTransaction";
 import { setNftApproval } from "@/api/smartContract/setNftApproval";
 import { transferNft } from "@/api/smartContract/transferNft";
 import NftsModal from "@/components/nftsModal";
+import { mintNft } from "@/api/smartContract/mintNft";
 
 export interface NftMessage {
   contract: string;
@@ -30,108 +31,108 @@ export interface TxMessage {
   price: number;
 }
 
-const chatHistory_db = [
-  {
-    from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
-    type: "nft",
-    message: JSON.stringify({
-      contract: "0x1234...5678",
-      tokenId: 0,
-      tokenUri: "Mn9hFs-fpKnO3QZbpqQCnbQB_gbTrWjUalO969wfK-LoQcdD4KQwf7wZwD-34",
-      image:
-        "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
-    }),
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-    type: "text",
-    message:
-      "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
-    type: "text",
-    message:
-      "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
-    type: "text",
-    message:
-      "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-    type: "nft",
-    message: JSON.stringify({
-      contract: "0x1234asdfasdf...5678",
-      tokenId: 0,
-      tokenUri:
-        "Mn9hFs-fpKnOasdfasdf3QZbpqQCnbQB_gbTrWjUalO969wfK-LoQcdD4KQwf7wZwD-34",
-      image:
-        "https://i.seadn.io/gae/kXognhEHC07v0E9mDsXuLqOdwjJBvg-jP--JUL8zy3_OSoVH1Cma-3CaU5UNcV32DvJF9ZvCJwYTckgdljGLBCx0VaoBXLWFdlyD?auto=format&dpr=1&w=512",
-    }),
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-    type: "text",
-    message:
-      "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "system",
-    type: "text",
-    message: "NFT owner Approved the transaction",
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-    type: "text",
-    message:
-      "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-    type: "tx",
-    message: JSON.stringify({
-      action: "BuyerProposed",
-      contract: "0xeaebeaa8907806c975e5f48dba8b84fb5d1bd4be",
-      seller: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
-      buyer: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-      tokenId: 2,
-      tokenUri:
-        "https://ipfs.io/ipfs/QmdhJZtD7rkS1tnfKqCZ21FYyyjNKPrA5LYedt2ZABFYN8/3",
-      image:
-        "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
-      price: 0.001,
-    }),
-    timestamp: "7:00 PM",
-  },
-  {
-    from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
-    type: "tx",
-    message: JSON.stringify({
-      action: "SellerAgree",
-      contract: "0xeaebeaa8907806c975e5f48dba8b84fb5d1bd4be",
-      seller: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
-      buyer: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
-      tokenId: 2,
-      tokenUri:
-        "https://ipfs.io/ipfs/QmdhJZtD7rkS1tnfKqCZ21FYyyjNKPrA5LYedt2ZABFYN8/3",
-      image:
-        "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
-      price: 0.001,
-    }),
-    timestamp: "7:00 PM",
-  },
-];
+// const chatHistory_db = [
+//   {
+//     from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+//     type: "nft",
+//     message: JSON.stringify({
+//       contract: "0x1234...5678",
+//       tokenId: 0,
+//       tokenUri: "Mn9hFs-fpKnO3QZbpqQCnbQB_gbTrWjUalO969wfK-LoQcdD4KQwf7wZwD-34",
+//       image:
+//         "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
+//     }),
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+//     type: "text",
+//     message:
+//       "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+//     type: "text",
+//     message:
+//       "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+//     type: "text",
+//     message:
+//       "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+//     type: "nft",
+//     message: JSON.stringify({
+//       contract: "0x1234asdfasdf...5678",
+//       tokenId: 0,
+//       tokenUri:
+//         "Mn9hFs-fpKnOasdfasdf3QZbpqQCnbQB_gbTrWjUalO969wfK-LoQcdD4KQwf7wZwD-34",
+//       image:
+//         "https://i.seadn.io/gae/kXognhEHC07v0E9mDsXuLqOdwjJBvg-jP--JUL8zy3_OSoVH1Cma-3CaU5UNcV32DvJF9ZvCJwYTckgdljGLBCx0VaoBXLWFdlyD?auto=format&dpr=1&w=512",
+//     }),
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+//     type: "text",
+//     message:
+//       "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "system",
+//     type: "text",
+//     message: "NFT owner Approved the transaction",
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+//     type: "text",
+//     message:
+//       "Many books require no thought from those who read them, and for a very simple reason; they made no such demand upon those who wrote them",
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+//     type: "tx",
+//     message: JSON.stringify({
+//       action: "BuyerProposed",
+//       contract: "0xeaebeaa8907806c975e5f48dba8b84fb5d1bd4be",
+//       seller: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+//       buyer: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+//       tokenId: 2,
+//       tokenUri:
+//         "https://ipfs.io/ipfs/QmdhJZtD7rkS1tnfKqCZ21FYyyjNKPrA5LYedt2ZABFYN8/3",
+//       image:
+//         "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
+//       price: 0.001,
+//     }),
+//     timestamp: "7:00 PM",
+//   },
+//   {
+//     from: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+//     type: "tx",
+//     message: JSON.stringify({
+//       action: "SellerAgree",
+//       contract: "0xeaebeaa8907806c975e5f48dba8b84fb5d1bd4be",
+//       seller: "0x2eD5018aaFB29C969FF443c95D5CD2d21cB709aA",
+//       buyer: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
+//       tokenId: 2,
+//       tokenUri:
+//         "https://ipfs.io/ipfs/QmdhJZtD7rkS1tnfKqCZ21FYyyjNKPrA5LYedt2ZABFYN8/3",
+//       image:
+//         "https://i.seadn.io/gae/iYaSGhz-OqLV07CKHB9u68uDdYRvcSpMoF47FEreNitnVPpLrzoYPPus8JBGh49qMWqIk7dfu2NaHbEmtGiNnvrlEgmkN3m4_TgF-A?auto=format&dpr=1&w=2048",
+//       price: 0.001,
+//     }),
+//     timestamp: "7:00 PM",
+//   },
+// ];
 
 type ChatHistory = {
   from: string;
@@ -152,7 +153,7 @@ interface ChatRoomProps {
 
 const db = {
   roomId: "1234",
-  type: "user",
+  type: "creator",
   host: "0xE2A794de195D92bBA0BA64e006FcC3568104245d",
   hostUsername: "host",
   hostProfile:
@@ -167,7 +168,7 @@ export default function ChatRoom() {
   const { address, isConnected } = useAccount();
   const router = useRouter();
   const roomInfo = db;
-  const [chatHistory, setChatHistory] = useState<ChatHistory[]>(chatHistory_db);
+  const [chatHistory, setChatHistory] = useState<ChatHistory[]>([]);
   const [textMessage, setTextMessage] = useState<string>("");
   const [txModalOn, setTxModalOn] = useState<boolean>(false);
   const [nftsModalOn, setNftsModalOn] = useState<boolean>(false);
@@ -521,7 +522,9 @@ export default function ChatRoom() {
           roomInfo.type === "creator" && (
             <IoHammerOutline
               className="text-white text-3xl"
-              // onClick={() => setModalOn(true)}
+              onClick={() =>
+                mintNft("0xA5C6f606F19B43974bcbeBdD86c68848cAB9EFfC", address!)
+              }
             />
           )
         }

@@ -1,18 +1,5 @@
 [
     {
-        "inputs": [],
-        "name": "erc721",
-        "outputs": [
-            {
-                "internalType": "contract ERC721",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "address payable",

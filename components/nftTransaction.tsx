@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAccount } from "wagmi";
 import { setNftApproval } from "@/api/smartContract/setNftApproval";
+import Link from "next/link";
 
 interface SellerMessageProps {
   proposedNftTx: any;
@@ -116,6 +117,7 @@ export const BuyerMessage = (props: BuyerMessageProp) => {
         </div>
         <div className="mt-2 flex justify-center">
           <button
+            // href="/app/transferNft"
             className="px-2  border border-gray-400 rounded-lg"
             onClick={() => props.executeTransfer(tx)}
           >

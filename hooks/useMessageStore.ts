@@ -1,27 +1,27 @@
-import { Message } from '@xmtp/xmtp-js';
-import { useCallback, useReducer } from 'react';
-import { MessageStoreEvent } from '../contexts/XmtpContexts';
+import { Message } from "@xmtp/xmtp-js";
+import { useReducer } from "react";
+import { MessageStoreEvent } from "../contexts/xmtpContext";
 
-type MessageDeduper = (message: Message) => boolean;
 type MessageStore = { [address: string]: Message[] };
+type MessageDeduper = (message: Message) => boolean;
 
 const buildMessageDeduper = (state: Message[]): MessageDeduper => {
-  const existingMessageKeys = new Set(state.map((msg) => msg.id));
-  return (msg: Message) => !existingMessageKeys.has(msg.id);
+  const existingMessageKeys = state.map((msg) => msg.id);
+
+  return (msg: Message) => existingMessageKeys.indexOf(msg.id) === -1;
 };
 
 const useMessageStore = () => {
   const [messageStore, dispatchMessages] = useReducer(
     (state: MessageStore, { peerAddress, messages }: MessageStoreEvent) => {
       const existing = state[peerAddress] || [];
-      const deduper = buildMessageDeduper(existing);
-      const newMessages = messages.filter(deduper);
+      const newMessages = messages.filter(buildMessageDeduper(existing));
 
       if (!newMessages.length) {
         return state;
       }
 
-      console.log('Dispatching new messages for peer address', peerAddress);
+      console.log("Dispatching new messages for peer address", peerAddress);
 
       return {
         ...state,
@@ -31,13 +31,8 @@ const useMessageStore = () => {
     {}
   );
 
-  const getMessages = useCallback(
-    (peerAddress: string) => messageStore[peerAddress] || [],
-    [messageStore]
-  );
-
   return {
-    getMessages,
+    messageStore,
     dispatchMessages,
   };
 };

@@ -8,7 +8,7 @@ import Image from "next/image";
 import { swipeRight } from "@/api/firebase";
 // import { useGetAllProfiles } from "@/hooks/useGetAllProfiles";
 import { useGetUserMatched } from "@/hooks/useGetUserMatched";
-import { XmtpContext } from "@/contexts/XmtpContexts";
+import { XmtpContext } from "@/contexts/xmtpContext";
 
 const data = [
   {

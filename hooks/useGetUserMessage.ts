@@ -1,62 +1,83 @@
-import { ConversationV2, Message, Stream } from '@xmtp/xmtp-js';
-import { useCallback, useEffect, useState } from 'react';
-import { XmtpContext } from '../contexts/XmtpContexts';
-import useXmtp from './useXmtp';
+import { Conversation, Message, Stream } from "@xmtp/xmtp-js";
+import { useState, useEffect, useContext } from "react";
+import XmtpContext from "../contexts/xmtpContext";
+import useMessageStore from "./useMessageStore";
 
 type OnMessageCallback = () => void;
 
-const useGetUserMessage = (peerAddress: string, onMessageCallback?: OnMessageCallback) => {
-  const { client, getMessages, dispatchMessages } = useXmtp();
-  const [conversation, setConversation] = useState<ConversationV2<any> | null>(null);
+const useConversation = (
+  peerAddress: string,
+  onMessageCallback?: OnMessageCallback
+) => {
+  const { client, convoMessages } = useContext(XmtpContext);
+  const { messageStore, dispatchMessages } = useMessageStore();
+  const [conversation, setConversation] = useState<Conversation | null>(null);
+  const [stream, setStream] = useState<Stream<Message>>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleMessages = useCallback(
-    async (messages: Message[], shouldDispatch = true) => {
-      if (shouldDispatch && dispatchMessages) {
-        dispatchMessages({ peerAddress, messages });
+  useEffect(() => {
+    const getConvo = async () => {
+      if (!client || !peerAddress) {
+        return;
+      }
+      setConversation(await client.conversations.newConversation(peerAddress));
+    };
+    getConvo();
+  }, [peerAddress]);
+
+  useEffect(() => {
+    const closeStream = async () => {
+      if (!stream) return;
+      await stream.return();
+    };
+    closeStream();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!conversation) return;
+    const listMessages = () => {
+      setLoading(true);
+      if (dispatchMessages) {
+        dispatchMessages({
+          peerAddress: conversation.peerAddress,
+          messages: convoMessages.get(conversation.peerAddress) ?? [],
+        });
       }
       if (onMessageCallback) {
         onMessageCallback();
       }
-    },
-    [dispatchMessages, onMessageCallback, peerAddress]
-  );
-
-  useEffect(() => {
-    const initialize = async () => {
-      if (client) {
-        const convo = await client.conversations.newConversation(peerAddress) as ConversationV2<String>;
-        setConversation(convo);
-        const messages = await convo.messages({ limit: 100 });
-        handleMessages(messages as unknown as Message[]);
-        setLoading(false);
-
-        const stream = await convo.streamMessages();
-        for await (const msg of stream) {
-          handleMessages([msg as unknown as Message]);
+      setLoading(false);
+    };
+    const streamMessages = async () => {
+      const stream = await conversation.streamMessages();
+      setStream(stream);
+      for await (const msg of stream) {
+        if (dispatchMessages) {
+          await dispatchMessages({
+            peerAddress: conversation.peerAddress,
+            messages: [msg as unknown as Messag],
+          });
+        }
+        if (onMessageCallback) {
+          onMessageCallback();
         }
       }
     };
+    listMessages();
+    streamMessages();
+  }, [conversation, convoMessages, dispatchMessages, onMessageCallback]);
 
-    setLoading(true);
-    initialize();
-  }, [client, handleMessages, peerAddress]);
-
-  const handleSend = useCallback(
-    async (message: string) => {
-      if (conversation) {
-        await conversation.send(message);
-      }
-    },
-    [conversation]
-  );
+  const handleSend = async (message: string) => {
+    if (!conversation) return;
+    await conversation.send(message);
+  };
 
   return {
-    conversation,
     loading,
-    messages: getMessages(peerAddress),
+    messages: messageStore[peerAddress] ?? [],
     sendMessage: handleSend,
   };
 };
 
-export default useGetUserMessage;
+export default useConversation;

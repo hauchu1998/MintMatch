@@ -1,90 +1,112 @@
-import { Conversation } from '@xmtp/xmtp-js';
-import { Client } from '@xmtp/xmtp-js';
-import { useCallback, useEffect, useReducer, useState } from 'react';
-import { useSigner } from 'wagmi';
-
-import { XmtpContext } from '../../contexts/XmtpContexts';
-import useMessageStore from '../../hooks/useMessageStore';
-
-export type XmtpProviderProps = {
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
+import { Conversation, Message } from "@xmtp/xmtp-js";
+import { Client } from "@xmtp/xmtp-js";
+import { Signer } from "ethers";
+import { getEnv } from "@/helper/env";
+import { XmtpContext, XmtpContextType } from "@/contexts/xmtpContext";
+import { WalletContext } from "../../contexts/walletContext";
+interface XmtpProviderProps {
   children: React.ReactNode;
-};
-
+}
 export const XmtpProvider: React.FC<XmtpProviderProps> = ({ children }) => {
-  const [client, setClient] = useState<Client>();
-  const { data: signer } = useSigner();
-
-  const { getMessages, dispatchMessages } = useMessageStore();
+  const [client, setClient] = useState<Client | null>();
+  const { signer } = useContext(WalletContext);
   const [loadingConversations, setLoadingConversations] =
     useState<boolean>(false);
+  const [convoMessages, setConvoMessages] = useState<Map<string, Message[]>>(
+    new Map()
+  );
 
   const [conversations, dispatchConversations] = useReducer(
-    (state: Conversation[], newConvos: Conversation[] | undefined) => {
+    (
+      state: Map<string, Conversation>,
+      newConvos: Conversation[] | undefined
+    ): any => {
       if (newConvos === undefined) {
-        return [];
+        return new Map();
       }
-      newConvos = newConvos.filter(
-        (convo) =>
-          state.findIndex((otherConvo) => {
-            return convo.peerAddress === otherConvo.peerAddress;
-          }) < 0 && convo.peerAddress != client?.address
-      );
-      return newConvos === undefined ? [] : state.concat(newConvos);
+      newConvos.forEach((convo) => {
+        if (convo.peerAddress !== client?.address) {
+          if (state && !state.has(convo.peerAddress)) {
+            state.set(convo.peerAddress, convo);
+          } else if (state === null) {
+            state = new Map();
+            state.set(convo.peerAddress, convo);
+          }
+        }
+      });
+      return state ?? new Map();
     },
     []
   );
 
-  const connect = useCallback(async () => {
-    if (signer !== undefined && signer !== null) {
-      const client = await Client.create(signer);
+  const initClient = useCallback(
+    async (wallet: Signer) => {
+      if (wallet && !client) {
+        try {
+          setClient(await Client.create(wallet, { env: getEnv() }));
+        } catch (e) {
+          console.error(e);
+          setClient(null);
+        }
+      }
+    },
+    [client]
+  );
 
-      setClient(client);
-    }
-  }, [signer]);
-
-  const disconnect = useCallback(async () => {
-    if (client) {
-      setClient(undefined);
-      dispatchConversations(undefined);
-    }
-  }, [setClient, dispatchConversations, client]);
+  const disconnect = () => {
+    setClient(undefined);
+    dispatchConversations(undefined);
+  };
 
   useEffect(() => {
+    signer ? initClient(signer) : disconnect();
+  }, [signer]);
+
+  useEffect(() => {
+    if (!client) return;
+
     const listConversations = async () => {
-      if (!client) return;
+      console.log("Listing conversations");
       setLoadingConversations(true);
       const convos = await client.conversations.list();
-      convos.forEach((convo: Conversation) => {
+      for (const convo of convos) {
+        const messages = await convo.messages();
+        convoMessages.set(convo.peerAddress, messages as unknown as Message[]);
+        setConvoMessages(convoMessages);
         dispatchConversations([convo]);
-      });
+      }
       setLoadingConversations(false);
     };
     listConversations();
-  }, [client]);
+  }, [client, convoMessages]);
+
+  const [providerState, setProviderState] = useState<XmtpContextType>({
+    client,
+    conversations,
+    loadingConversations,
+    initClient,
+    convoMessages,
+  });
 
   useEffect(() => {
-    const streamConversations = async () => {
-      if (!client) return;
-      const stream = await client.conversations.stream();
-      for await (const convo of stream) {
-        dispatchConversations([convo]);
-      }
-    };
-    streamConversations();
-  }, [client]);
+    setProviderState({
+      client,
+      conversations,
+      loadingConversations,
+      initClient,
+      convoMessages,
+    });
+  }, [client, conversations, convoMessages, initClient, loadingConversations]);
 
   return (
-    <XmtpContext.Provider
-      value={{
-        client,
-        conversations,
-        loadingConversations,
-        getMessages,
-        dispatchMessages,
-        connect,
-        disconnect,
-      }}
-    >
+    <XmtpContext.Provider value={providerState}>
       {children}
     </XmtpContext.Provider>
   );
