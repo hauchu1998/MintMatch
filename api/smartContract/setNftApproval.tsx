@@ -11,6 +11,7 @@ const contract = new ethers.Contract(
 );
 
 export const setNftApproval = async (contract: string, tokenId: number) => {
+<<<<<<< Updated upstream
   const c = new ethers.Contract(contract!, erc721ABI, signer);
   const res = await c.approve(
     process.env.NEXT_PUBLIC_MINT_MATCH_ADDRESS,
@@ -25,4 +26,19 @@ export const setNftApproval = async (contract: string, tokenId: number) => {
   // });
   // const { hash } = await writeContract(config);
   return res;
+=======
+  // const c = new ethers.Contract(contract!, erc721ABI, signer);
+  // const res = await c.approve(
+  //   process.env.NEXT_PUBLIC_MINT_MATCH_ADDRESS,
+  //   tokenId
+  // );
+  const config = await prepareWriteContract({
+    address: contract as `0x${string}`,
+    abi: erc721ABI,
+    functionName: "approve",
+    args: [process.env.NEXT_PUBLIC_MINT_MATCH_ADDRESS, tokenId],
+    chainId: 80001,
+  });
+  const { hash } = await writeContract(config);
+>>>>>>> Stashed changes
 };
