@@ -23,4 +23,4 @@ npm run dev
 - [ ] User can swipe left if they don't like the NFT
 - [ ] User can chat with other users about the NFT or interests
 - [ ] User can sell their NFT using smart contract which will transact the NFT to the buyer
-- [ ] User can requeats to buy NFT from other users using smart contract which will transact the NFT to the buyer
+- [ ] User can requests to buy NFT from other users using smart contract which will transact the NFT to the buyer
