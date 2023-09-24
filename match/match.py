@@ -111,4 +111,4 @@ def main(user_address: str) -> List[dict]:
 
     return profiles
 
-print(main("0x123"))
+# print(main("0x123"))
