@@ -202,8 +202,8 @@ export const TransactionModal = (props: TransactionModalProps) => {
         className="mt-2 w-30 h-30 rounded-lg"
         src={proposedNftTx.image}
         alt="NFT"
-        width={20}
-        height={20}
+        width={200}
+        height={200}
         priority
       />
       <button

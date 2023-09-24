@@ -84,8 +84,8 @@ export default function NftsModal(props: NftsModalProps) {
                     className="w-40 h-40 rounded-lg"
                     src={nft.image}
                     alt={`NFT${index}`}
-                    width={20}
-                    height={20}
+                    width={200}
+                    height={200}
                     priority
                   />
                   {

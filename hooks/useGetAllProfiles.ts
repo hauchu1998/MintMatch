@@ -4,7 +4,6 @@ import axios from "axios";
 import { useAccount } from "wagmi";
 
 const getAllProfilesApi = async () => {
-  console.log("here");
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/all`,
     {
@@ -14,7 +13,6 @@ const getAllProfilesApi = async () => {
       },
     }
   );
-  console.log(res.data);
   return res.data?.profiles;
 };
 

@@ -82,7 +82,6 @@ const fetchUserMatched = async (address: string) => {
     });
     return { ...profile, nfts };
   });
-  console.log(stack);
   return stack;
 };
 

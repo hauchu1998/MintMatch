@@ -21,7 +21,6 @@ export const fetchAllProfiles = async () => {
   const dbRef = ref(getDatabase(app));
   const snapshot = await get(child(dbRef, `profile/all`));
 
-  console.log("here2");
   return snapshot.val() || {};
 };
 
@@ -29,7 +28,6 @@ export const fetchUserProfiles = async (address: string) => {
   //get profile by address
   const dbRef = ref(getDatabase(app));
   const snapshot = await get(child(dbRef, `profile/${address}`));
-  console.log(snapshot.val());
   return snapshot.val() || {};
 };
 

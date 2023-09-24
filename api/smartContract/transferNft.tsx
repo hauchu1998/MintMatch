@@ -18,7 +18,7 @@ export const transferNft = async (
 ) => {
   let transaction = {
     value: ethers.utils.parseEther(price * 1.1 + ""),
-    gasLimit: ethers.utils.hexlify(2000000),
+    gasLimit: ethers.utils.hexlify(5000000),
   };
   const res = await contract.transfer(
     seller,
@@ -27,7 +27,7 @@ export const transferNft = async (
     price * 10 ** 18,
     transaction
   );
-  console.log(res);
+
   return res;
   // const config = await prepareWriteContract({
   //   address: process.env.NEXT_PUBLIC_MINT_MATCH_ADDRESS as `0x${string}`,

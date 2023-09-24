@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { ConversationV2 } from "@xmtp/xmtp-js";
 import Swipe from "@/components/swipe";
 import { useRouter } from "next/router";
@@ -6,11 +6,9 @@ import { useAccount } from "wagmi";
 import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import { swipeRight } from "@/api/firebase";
-import { dir, profile } from "console";
-import { useGetAllProfiles } from "@/hooks/useGetAllProfiles";
+// import { useGetAllProfiles } from "@/hooks/useGetAllProfiles";
 import { useGetUserMatched } from "@/hooks/useGetUserMatched";
-// import useXmtp from "@/hooks/useXmtp";
-// import { useGetXmtpClient } from "@/hooks/useGetXmtpClient";
+import { XmtpContext } from "@/contexts/XmtpContexts";
 
 const data = [
   {
@@ -55,6 +53,8 @@ const data = [
 ];
 
 export default function Match() {
+  const xmptContext = useContext(XmtpContext);
+  // const { client } = useClient();
   const { data, isLoading } = useGetUserMatched();
   const { address, isConnected } = useAccount();
   const router = useRouter();
@@ -81,11 +81,14 @@ export default function Match() {
       const matched = await swipeRight(address as string, cardAddress);
       if (matched) {
         alert("Match!!!");
-        // if (xmtp && xmtp.client !== undefined) {
-        //   (await xmtp.client.conversations.newConversation(
-        //     cardAddress
-        //   )) as ConversationV2<String>;
-        // }
+        console.log(xmptContext.client);
+        if (xmptContext.client) {
+          console.log("here");
+          const conversation =
+            await xmptContext.client.conversations.newConversation(cardAddress);
+          const msg = await conversation.send("Hello World");
+          console.log(msg);
+        }
       }
     }
   };
@@ -111,10 +114,9 @@ export default function Match() {
     }
   }, [data]);
 
-  if (isLoading) {
+  if (isLoading || data === undefined) {
     return <div>Loading...</div>;
   }
-  console.log(data.map((profile: any) => profile.nfts[0].image));
   return (
     <Swipe
       cardDeck={data.length}
@@ -140,8 +142,8 @@ export default function Match() {
               className="rounded-lg w-full h-[300px] border border-[#195573]"
               src={profile.nfts[0].image}
               alt={`NFT${index}`}
-              width={10}
-              height={10}
+              width={200}
+              height={200}
               priority
             />
             <div className="absolute left-3 bottom-3 font-bold text-white text-xl truncate w-[90%]">

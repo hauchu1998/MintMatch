@@ -1,18 +1,35 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { WagmiConfig, createConfig } from "wagmi";
-import { createPublicClient, http } from "viem";
-import { polygonMumbai } from "viem/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { XMTPProvider } from "@xmtp/react-sdk";
+import { XmtpProvider } from "@/components/providers/xmtpProvider";
 import BaseApp from "@/components/baseApp";
 
-const config = createConfig({
+import { polygonMumbai } from "@wagmi/core/chains";
+import { alchemyProvider } from "@wagmi/core/providers/alchemy";
+import { InjectedConnector } from "@wagmi/core/connectors/injected";
+
+import { createClient, configureChains, WagmiConfig } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
+
+const { chains, provider } = configureChains(
+  [polygonMumbai],
+  // prettier-ignore
+  [
+    alchemyProvider({ apiKey:  process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!}), 
+    publicProvider()
+  ]
+);
+
+export const WAGMI_CLIENT = createClient({
   autoConnect: true,
-  publicClient: createPublicClient({
-    chain: polygonMumbai,
-    transport: http(),
-  }),
+  connectors: [new InjectedConnector({ chains })],
+  provider,
+});
+
+const config = createClient({
+  autoConnect: true,
+  connectors: [new InjectedConnector({ chains })],
+  provider,
 });
 
 export const queryClient = new QueryClient({
@@ -23,14 +40,14 @@ export const queryClient = new QueryClient({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig config={config}>
-      <XMTPProvider>
+    <WagmiConfig client={config}>
+      <XmtpProvider>
         <QueryClientProvider client={queryClient}>
           <BaseApp>
             <Component {...pageProps} />
           </BaseApp>
         </QueryClientProvider>
-      </XMTPProvider>
+      </XmtpProvider>
     </WagmiConfig>
   );
 }

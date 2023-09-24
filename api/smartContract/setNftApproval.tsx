@@ -11,7 +11,6 @@ const contract = new ethers.Contract(
 );
 
 export const setNftApproval = async (contract: string, tokenId: number) => {
-  console.log(contract, process.env.NEXT_PUBLIC_MINT_MATCH_ADDRESS, tokenId);
   const c = new ethers.Contract(contract!, erc721ABI, signer);
   const res = await c.approve(
     process.env.NEXT_PUBLIC_MINT_MATCH_ADDRESS,

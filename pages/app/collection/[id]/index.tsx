@@ -57,8 +57,8 @@ export default function NftCollection() {
             src={data?.image}
             alt={data?.name}
             className="w-50 h-50 rounded-lg"
-            width={20}
-            height={20}
+            width={200}
+            height={200}
           />
         </div>
         <div className="mt-5 w-full ">
@@ -86,8 +86,8 @@ export default function NftCollection() {
                     className="w-28 h-28 rounded-lg"
                     src={nft}
                     alt={`Sample${index}`}
-                    width={20}
-                    height={20}
+                    width={200}
+                    height={200}
                     priority
                   />
                 </div>

@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { useGetUserProfile } from "@/hooks/useGetUserProfile";
 
 export default function Home() {
   const router = useRouter();
+  // const { client, initialize} = useClient()
   const { data, isLoading } = useGetUserProfile();
   const { isConnected } = useAccount();
   const { connect } = useConnect({
@@ -19,7 +20,6 @@ export default function Home() {
 
   useEffect(() => {
     if (isLoading) return;
-    console.log(data);
     if (data && data.address) {
       router.push("/app/match");
     } else {
@@ -34,8 +34,8 @@ export default function Home() {
           className="w-[80%]"
           src="/logo.png"
           alt="Mint Match Logo"
-          width={51}
-          height={28}
+          width={516}
+          height={288}
           priority
         />
       </div>

@@ -55,38 +55,3 @@ export const useGetUserNfts = () => {
     },
   });
 };
-
-// const AIRSTACK_API_KEY = process.env.NEXT_PUBLIC_AIRSTACK_API_KEY!;
-// init(AIRSTACK_API_KEY);
-
-// export const useGetUserNfts = () => {
-//   const { address } = useAccount();
-//   const query = `query MyQuery {
-//         Mumbai: TokenBalances(
-//           input: {filter: {owner: {_eq: "${address}"}, tokenType: {_in: [ERC1155, ERC721]}}, blockchain: polygon, limit: 50}
-//         ) {
-//           TokenBalance {
-//             owner {
-//               identity
-//             }
-//             amount
-//             tokenAddress
-//             tokenId
-//             tokenType
-//             tokenNfts {
-//               contentValue {
-//                 image {
-//                   small
-//                 }
-//               }
-//             }
-//           }
-//           pageInfo {
-//             nextCursor
-//             prevCursor
-//           }
-//         }
-//       }`;
-//   //   console.log(query);
-//   return useQuery(query);
-// };
